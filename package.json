@@ -1,0 +1,20 @@
+{
+    "name": "resize-channels-width",
+    "version": "1.0.0",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "start": "node ./build/resize-channels-width.plugin.js",
+        "build": "rollup -c rollup.config.js"
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^28.0.3",
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "@types/node": "^22.13.10",
+        "prettier": "^3.5.3",
+        "rollup": "^4.35.0",
+        "rollup-plugin-banner2": "^1.3.1",
+        "rollup-plugin-typescript2": "^0.36.0",
+        "typescript": "^5.8.2"
+    }
+}
