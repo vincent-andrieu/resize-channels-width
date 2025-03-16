@@ -14,7 +14,7 @@ const LOG_PREFIX = `[${NAME}]`;
 const SIDEBAR_SELECTOR = '[class^="sidebar_"]';
 const OVERRIDE_STYLE_ID = "resize-channels-width-styles";
 const SETTING_SIDEBAR_WIDTH = "sidebarWidth";
-const RESIZER_WIDTH = 6;
+const RESIZER_WIDTH = 7;
 const SIDEBAR_MIN_WIDTH = 45;
 const SIDEBAR_MAX_WIDTH = 600;
 const DEFAULT_SIDEBAR_WIDTH = 240;
