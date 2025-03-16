@@ -84,7 +84,6 @@ export default class ResizeChannelsWidth {
         const width = this.initialWidth + (event.clientX - this.initialX);
 
         if (width >= SIDEBAR_MIN_WIDTH && width <= SIDEBAR_MAX_WIDTH) {
-            console.warn("width", width);
             const sidebar = this._getSidebar();
 
             sidebar.style.setProperty("width", `${width}px`, "important");
