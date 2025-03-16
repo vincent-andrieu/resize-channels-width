@@ -12,6 +12,7 @@
 const NAME = "ResizeChannelsWidth";
 const LOG_PREFIX = `[${NAME}]`;
 const SIDEBAR_SELECTOR = '[class^="sidebar_"]';
+const OVERRIDE_STYLE_ID = "resize-channels-width-styles";
 const SETTING_SIDEBAR_WIDTH = "sidebarWidth";
 const RESIZER_WIDTH = 6;
 const SIDEBAR_MIN_WIDTH = 45;
@@ -23,9 +24,11 @@ class ResizeChannelsWidth {
     isResizing = false;
     start() {
         console.warn(LOG_PREFIX, "Started");
+        this._injectCustomStyles();
         this._addResizer();
     }
     stop() {
+        this._removeCustomStyles();
         this._removeResizer();
         console.warn(LOG_PREFIX, "Stopped");
     }
@@ -103,6 +106,22 @@ class ResizeChannelsWidth {
         const sidebar = document.querySelector(SIDEBAR_SELECTOR);
         sidebar?.style.removeProperty("position");
         sidebar?.style.removeProperty("width");
+    }
+    _injectCustomStyles() {
+        const style = document.createElement("style");
+        style.id = OVERRIDE_STYLE_ID;
+        style.textContent = `
+            [class^="channel_"] {
+                max-width: none;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    _removeCustomStyles() {
+        const style = document.getElementById(OVERRIDE_STYLE_ID);
+        if (style) {
+            style.remove();
+        }
     }
     _onMouseDownSubscription = this._onMouseDown.bind(this);
     _onMouseMoveSubscription = this._onMouseMove.bind(this);

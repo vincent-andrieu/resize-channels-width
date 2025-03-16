@@ -1,6 +1,7 @@
 const NAME = "ResizeChannelsWidth";
 const LOG_PREFIX = `[${NAME}]`;
 const SIDEBAR_SELECTOR = '[class^="sidebar_"]';
+const OVERRIDE_STYLE_ID = "resize-channels-width-styles";
 const SETTING_SIDEBAR_WIDTH = "sidebarWidth";
 const RESIZER_WIDTH = 6;
 const SIDEBAR_MIN_WIDTH = 45;
@@ -15,10 +16,12 @@ export default class ResizeChannelsWidth {
     start() {
         console.warn(LOG_PREFIX, "Started");
 
+        this._injectCustomStyles();
         this._addResizer();
     }
 
     stop() {
+        this._removeCustomStyles();
         this._removeResizer();
 
         console.warn(LOG_PREFIX, "Stopped");
@@ -114,6 +117,26 @@ export default class ResizeChannelsWidth {
         const sidebar = document.querySelector(SIDEBAR_SELECTOR) as HTMLElement | null;
         sidebar?.style.removeProperty("position");
         sidebar?.style.removeProperty("width");
+    }
+
+    private _injectCustomStyles() {
+        const style = document.createElement("style");
+
+        style.id = OVERRIDE_STYLE_ID;
+        style.textContent = `
+            [class^="channel_"] {
+                max-width: none;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    private _removeCustomStyles() {
+        const style = document.getElementById(OVERRIDE_STYLE_ID);
+
+        if (style) {
+            style.remove();
+        }
     }
 
     private _onMouseDownSubscription: typeof ResizeChannelsWidth.prototype._onMouseDown = this._onMouseDown.bind(this);
