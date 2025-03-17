@@ -1,13 +1,22 @@
-const NAME = "ResizeChannelsWidth";
-const LOG_PREFIX = `[${NAME}]`;
+import {
+    DEFAULT_RESIZER_WIDTH,
+    DEFAULT_SIDEBAR_WIDTH,
+    getConfig,
+    getSetting,
+    LOG_PREFIX,
+    NAME,
+    RESIZER_MAX_WIDTH,
+    RESIZER_MIN_WIDTH,
+    SETTING_DEFAULT_SIDEBAR_WIDTH,
+    SETTING_RESIZER_WIDTH,
+    SETTING_SIDEBAR_WIDTH,
+    SIDEBAR_MAX_WIDTH,
+    SIDEBAR_MIN_WIDTH
+} from "./settings";
+
 const SIDEBAR_SELECTOR = '[class^="sidebar_"]';
 const RESIZER_ID = "sidebar-resizer";
 const OVERRIDE_STYLE_ID = "resize-channels-width-styles";
-const SETTING_SIDEBAR_WIDTH = "sidebarWidth";
-const RESIZER_WIDTH = 7;
-const SIDEBAR_MIN_WIDTH = 45;
-const SIDEBAR_MAX_WIDTH = 600;
-const DEFAULT_SIDEBAR_WIDTH = 240;
 
 export default class ResizeChannelsWidth {
     private initialX: number = 0;
@@ -29,6 +38,28 @@ export default class ResizeChannelsWidth {
         console.warn(LOG_PREFIX, "Stopped");
     }
 
+    getSettingsPanel() {
+        return BdApi.UI.buildSettingsPanel({
+            settings: getConfig().settings,
+            onChange: (_category, id, value) => {
+                if (id === SETTING_RESIZER_WIDTH) {
+                    if (value >= RESIZER_MIN_WIDTH && value <= RESIZER_MAX_WIDTH) {
+                        BdApi.Data.save(getConfig().name, id, value);
+                        const resizer = document.getElementById(RESIZER_ID);
+
+                        resizer?.style.setProperty("width", `${value}px`);
+                    }
+                } else if (id === SETTING_DEFAULT_SIDEBAR_WIDTH) {
+                    if (value >= SIDEBAR_MIN_WIDTH && value <= SIDEBAR_MAX_WIDTH) {
+                        BdApi.Data.save(getConfig().name, id, value);
+                    }
+                } else {
+                    BdApi.Data.save(getConfig().name, id, value);
+                }
+            }
+        });
+    }
+
     private _getSidebar(): HTMLElement {
         const sidebar = document.querySelector(SIDEBAR_SELECTOR);
 
@@ -44,9 +75,10 @@ export default class ResizeChannelsWidth {
         sidebar.style.setProperty("position", "relative");
         this._setSidebarLastWidth(sidebar);
 
+        const resizerWidth = getSetting<number>(SETTING_RESIZER_WIDTH) || DEFAULT_RESIZER_WIDTH;
         const resizer = document.createElement("div");
         resizer.id = RESIZER_ID;
-        resizer.style.setProperty("width", `${RESIZER_WIDTH}px`);
+        resizer.style.setProperty("width", `${resizerWidth}px`);
         resizer.style.setProperty("height", "100%");
         resizer.style.setProperty("position", "absolute");
         resizer.style.setProperty("right", "0");
@@ -66,7 +98,7 @@ export default class ResizeChannelsWidth {
 
         if (savedWidth) {
             if (savedWidth < SIDEBAR_MIN_WIDTH || savedWidth > SIDEBAR_MAX_WIDTH) {
-                savedWidth = DEFAULT_SIDEBAR_WIDTH;
+                savedWidth = getSetting<number>(SETTING_DEFAULT_SIDEBAR_WIDTH) || DEFAULT_SIDEBAR_WIDTH;
                 BdApi.Data.save(NAME, SETTING_SIDEBAR_WIDTH, savedWidth);
             }
 
@@ -126,13 +158,14 @@ export default class ResizeChannelsWidth {
 
         resizer?.addEventListener("dblclick", () => {
             const sidebar = this._getSidebar();
+            const defaultSidebarWidth = getSetting<number>(SETTING_DEFAULT_SIDEBAR_WIDTH) || DEFAULT_SIDEBAR_WIDTH;
 
-            if (sidebar.offsetWidth === DEFAULT_SIDEBAR_WIDTH) {
+            if (sidebar.offsetWidth == defaultSidebarWidth) {
                 sidebar.style.setProperty("width", `${SIDEBAR_MAX_WIDTH}px`, "important");
                 BdApi.Data.save<number>(NAME, SETTING_SIDEBAR_WIDTH, SIDEBAR_MAX_WIDTH);
             } else {
-                sidebar.style.removeProperty("width");
-                BdApi.Data.delete(NAME, SETTING_SIDEBAR_WIDTH);
+                sidebar.style.setProperty("width", `${defaultSidebarWidth}px`, "important");
+                BdApi.Data.save<number>(NAME, SETTING_SIDEBAR_WIDTH, defaultSidebarWidth);
             }
         });
     };

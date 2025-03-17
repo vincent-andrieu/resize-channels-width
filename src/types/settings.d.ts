@@ -72,8 +72,8 @@ export interface PositionSetting extends SettingItem {
 export interface NumberSetting extends SettingItem {
     type: "number";
     value: number;
-    min: number;
-    max: number;
+    min?: number;
+    max?: number;
     step?: number;
 }
 
@@ -94,4 +94,4 @@ export interface SettingsCategory {
     settings: SettingConfigElement[];
 }
 
-export type SettingConfigElement = SettingsCategory | TextSetting | DropdownSetting<string> | SwitchSetting;
+export type SettingConfigElement = SettingsCategory | TextSetting | DropdownSetting<string> | SwitchSetting | NumberSetting;
