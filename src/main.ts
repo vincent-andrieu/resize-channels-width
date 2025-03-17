@@ -1,6 +1,7 @@
 const NAME = "ResizeChannelsWidth";
 const LOG_PREFIX = `[${NAME}]`;
 const SIDEBAR_SELECTOR = '[class^="sidebar_"]';
+const RESIZER_ID = "sidebar-resizer";
 const OVERRIDE_STYLE_ID = "resize-channels-width-styles";
 const SETTING_SIDEBAR_WIDTH = "sidebarWidth";
 const RESIZER_WIDTH = 7;
@@ -18,6 +19,7 @@ export default class ResizeChannelsWidth {
 
         this._injectCustomStyles();
         this._addResizer();
+        this._resizerDoubleClick();
     }
 
     stop() {
@@ -43,7 +45,7 @@ export default class ResizeChannelsWidth {
         this._setSidebarLastWidth(sidebar);
 
         const resizer = document.createElement("div");
-        resizer.id = "sidebar-resizer";
+        resizer.id = RESIZER_ID;
         resizer.style.setProperty("width", `${RESIZER_WIDTH}px`);
         resizer.style.setProperty("height", "100%");
         resizer.style.setProperty("position", "absolute");
@@ -105,7 +107,7 @@ export default class ResizeChannelsWidth {
     };
 
     private _removeResizer() {
-        const resizer = document.getElementById("sidebar-resizer");
+        const resizer = document.getElementById(RESIZER_ID);
         resizer?.removeEventListener("mousedown", this._onMouseDownSubscription);
         document.removeEventListener("mousemove", this._onMouseMoveSubscription);
         document.removeEventListener("mouseup", this._onMouseUpSubscription);
@@ -118,6 +120,22 @@ export default class ResizeChannelsWidth {
         sidebar?.style.removeProperty("position");
         sidebar?.style.removeProperty("width");
     }
+
+    private _resizerDoubleClick = () => {
+        const resizer = document.getElementById(RESIZER_ID);
+
+        resizer?.addEventListener("dblclick", () => {
+            const sidebar = this._getSidebar();
+
+            if (sidebar.offsetWidth === DEFAULT_SIDEBAR_WIDTH) {
+                sidebar.style.setProperty("width", `${SIDEBAR_MAX_WIDTH}px`, "important");
+                BdApi.Data.save<number>(NAME, SETTING_SIDEBAR_WIDTH, SIDEBAR_MAX_WIDTH);
+            } else {
+                sidebar.style.removeProperty("width");
+                BdApi.Data.delete(NAME, SETTING_SIDEBAR_WIDTH);
+            }
+        });
+    };
 
     private _injectCustomStyles() {
         const style = document.createElement("style");
