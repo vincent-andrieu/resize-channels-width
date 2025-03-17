@@ -5,7 +5,7 @@ export const LOG_PREFIX = `[${NAME}]`;
 export const DEFAULT_SIDEBAR_WIDTH = 240;
 export const SIDEBAR_MIN_WIDTH = 45;
 export const SIDEBAR_MAX_WIDTH = 600;
-export const DEFAULT_RESIZER_WIDTH = 7;
+export const DEFAULT_RESIZER_WIDTH = 5;
 export const RESIZER_MIN_WIDTH = 1;
 export const RESIZER_MAX_WIDTH = 20;
 
