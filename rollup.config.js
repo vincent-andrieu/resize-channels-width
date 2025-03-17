@@ -20,7 +20,7 @@ export default {
             "/**",
             " * @name ResizeChannelsWidth",
             " * @author gassastsina",
-            " * @description Make the channels list resizable with the mouse",
+            " * @description Resize the sidebar with the mouse or double click on the right border",
             " * @version 1.0.0",
             " * @authorId 292388871381975040",
             " * @source https://github.com/vincent-andrieu/resize-channels-width",
