@@ -200,6 +200,10 @@ class ResizeChannelsWidth {
             [class^="channel_"] {
                 max-width: none;
             }
+
+            section[class^="panels_"] > [class^="container_"] {
+                justify-content: space-between;
+            }
         `;
         document.head.appendChild(style);
     }
