@@ -1,3 +1,6 @@
+## Deprecated
+This plugin feature is now integrated into discord.
+
 ## Building the Project
 
 To build the project, follow these steps:
